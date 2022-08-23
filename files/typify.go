@@ -18,11 +18,11 @@ func (tp TypifyProduct) IsError() bool {
 	return false
 }
 
-func (tp TypifyProduct) AsError() error {
+func (tp TypifyProduct) Error() error {
 	if len(tp.errChain) > 0 {
 		errStr := ""
 		for index, err := range tp.errChain {
-			errStr += fmt.Errorf("[%d] %w", index, err).Error()
+			errStr += fmt.Errorf("[%d] %w ", index, err).Error()
 		}
 		return fmt.Errorf("%s", errStr)
 	}

@@ -1,6 +1,7 @@
 package files
 
 import (
+	"github.com/goplit/utils/utilerror"
 	"reflect"
 	"testing"
 )
@@ -20,7 +21,7 @@ func TestReadFileToProduct(t *testing.T) {
 			func(t *testing.T, product TypifyProduct) {
 				val := product.EquationLineTransforms().GetKey("NO_PROXY").AsCSVList()
 				if val.Error() != nil {
-					t.Errorf("cannot read env file NO_PROXY key due %v", val.AllErrors())
+					t.Errorf("cannot read env file NO_PROXY key due %v", val.Error())
 					return
 				}
 				if !reflect.DeepEqual(val.Value(), []string{".svc.cluster.local", "localhost", "127.0.0.1"}) {
@@ -36,7 +37,7 @@ func TestReadFileToProduct(t *testing.T) {
 			func(t *testing.T, product TypifyProduct) {
 				val := product.EquationLineTransforms().GetKey("HTTPS_PROXY").AsUrl()
 				if val.Error() != nil {
-					t.Errorf("cannot read env file HTTPS_PROXY key due %v", val.AllErrors())
+					t.Errorf("cannot read env file HTTPS_PROXY key due %v", val.Error())
 					return
 				}
 				if !reflect.DeepEqual(val.Value().String(), "https://some.proxy.com:8033") {
@@ -52,7 +53,7 @@ func TestReadFileToProduct(t *testing.T) {
 			func(t *testing.T, product TypifyProduct) {
 				val := product.EquationLineTransforms().GetKey("BOOL_VALUE").AsBoolean()
 				if val.Error() != nil {
-					t.Errorf("cannot read env file BOOL_VALUE key due %v", val.AllErrors())
+					t.Errorf("cannot read env file BOOL_VALUE key due %v", val.Error())
 					return
 				}
 				if !reflect.DeepEqual(val.Value(), true) {
@@ -68,7 +69,7 @@ func TestReadFileToProduct(t *testing.T) {
 			func(t *testing.T, product TypifyProduct) {
 				val := product.EquationLineTransforms().GetKey("INT_VALUE").AsInt()
 				if val.Error() != nil {
-					t.Errorf("cannot read env file INT_VALUE key due %v", val.AllErrors())
+					t.Errorf("cannot read env file INT_VALUE key due %v", val.Error())
 					return
 				}
 				if val.Value() != 5678909003 {
@@ -96,6 +97,34 @@ func TestReadFileToProduct(t *testing.T) {
 					return
 				}
 				t.Logf("successfully read and verified JSON_VALUE key in env test file")
+			},
+		},
+		{
+			"Test failing env file field as JSON object",
+			args{path: "test-tools/example.env"},
+			func(t *testing.T, product TypifyProduct) {
+				val := product.EquationLineTransforms().GetKey("NOT_A_JSON").AsJSON()
+				if val.Error() == nil {
+					t.Errorf("should produce error on env file NOT_A_JSON key")
+					return
+				}
+				t.Logf("successfully read and verified NOT_A_JSON key in env test file")
+			},
+		},
+		{
+			"Test reading non existent file",
+			args{path: "test-tools/example1.env"},
+			func(t *testing.T, product TypifyProduct) {
+				val := product.EquationLineTransforms().GetKey("NOT_A_JSON").AsJSON()
+				if val.Error() == nil {
+					t.Errorf("should produce error for non existent file to read")
+					return
+				}
+				if val.AsError(utilerror.NotFoundError) == nil {
+					t.Errorf("as error should show not found error for faulty read")
+				}
+				t.Logf("%v", val.Error())
+				t.Logf("successfully verified errors for non existent file chain")
 			},
 		},
 	}

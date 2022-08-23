@@ -1,6 +1,10 @@
 package files
 
-import "net/url"
+import (
+	"fmt"
+	"net/url"
+	"strings"
+)
 
 // StringArrayValue
 // Represents value of array of strings
@@ -16,11 +20,32 @@ func (sav StringArrayValue) Value() []string {
 }
 
 func (sav StringArrayValue) Error() error {
-	return sav.err
+	if len(sav.errChain) > 0 || sav.err != nil {
+		errStr := ""
+		if sav.err != nil {
+			sav.errChain = append(sav.errChain, sav.err)
+		}
+		for index, err := range sav.errChain {
+			errStr += fmt.Errorf("[%d] %w ", index, err).Error()
+		}
+
+		return fmt.Errorf("%s", errStr)
+	}
+	return nil
 }
 
-func (sav StringArrayValue) AllErrors() []error {
-	return sav.errChain
+func (sav StringArrayValue) AsError(errStr string) error {
+	if len(sav.errChain) > 0 || sav.err != nil {
+		if sav.err != nil {
+			sav.errChain = append(sav.errChain, sav.err)
+		}
+		for _, err := range sav.errChain {
+			if strings.Contains(err.Error(), errStr) {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 // UrlValue
@@ -37,11 +62,32 @@ func (uv UrlValue) Value() *url.URL {
 }
 
 func (uv UrlValue) Error() error {
-	return uv.err
+	if len(uv.errChain) > 0 || uv.err != nil {
+		errStr := ""
+		if uv.err != nil {
+			uv.errChain = append(uv.errChain, uv.err)
+		}
+		for index, err := range uv.errChain {
+			errStr += fmt.Errorf("[%d] %w ", index, err).Error()
+		}
+
+		return fmt.Errorf("%s", errStr)
+	}
+	return nil
 }
 
-func (uv UrlValue) AllErrors() []error {
-	return uv.errChain
+func (uv UrlValue) AsError(errStr string) error {
+	if len(uv.errChain) > 0 || uv.err != nil {
+		if uv.err != nil {
+			uv.errChain = append(uv.errChain, uv.err)
+		}
+		for _, err := range uv.errChain {
+			if strings.Contains(err.Error(), errStr) {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 // JsonObjectValue
@@ -58,11 +104,32 @@ func (jov JsonObjectValue) Value() map[string]interface{} {
 }
 
 func (jov JsonObjectValue) Error() error {
-	return jov.err
+	if len(jov.errChain) > 0 || jov.err != nil {
+		errStr := ""
+		if jov.err != nil {
+			jov.errChain = append(jov.errChain, jov.err)
+		}
+		for index, err := range jov.errChain {
+			errStr += fmt.Errorf("[%d] %w ", index, err).Error()
+		}
+
+		return fmt.Errorf("%s", errStr)
+	}
+	return nil
 }
 
-func (jov JsonObjectValue) AllErrors() []error {
-	return jov.errChain
+func (jov JsonObjectValue) AsError(errStr string) error {
+	if len(jov.errChain) > 0 || jov.err != nil {
+		if jov.err != nil {
+			jov.errChain = append(jov.errChain, jov.err)
+		}
+		for _, err := range jov.errChain {
+			if strings.Contains(err.Error(), errStr) {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 // BoolValue
@@ -79,11 +146,32 @@ func (bv BoolValue) Value() bool {
 }
 
 func (bv BoolValue) Error() error {
-	return bv.err
+	if len(bv.errChain) > 0 || bv.err != nil {
+		errStr := ""
+		if bv.err != nil {
+			bv.errChain = append(bv.errChain, bv.err)
+		}
+		for index, err := range bv.errChain {
+			errStr += fmt.Errorf("[%d] %w ", index, err).Error()
+		}
+
+		return fmt.Errorf("%s", errStr)
+	}
+	return nil
 }
 
-func (bv BoolValue) AllErrors() []error {
-	return bv.errChain
+func (bv BoolValue) AsError(errStr string) error {
+	if len(bv.errChain) > 0 || bv.err != nil {
+		if bv.err != nil {
+			bv.errChain = append(bv.errChain, bv.err)
+		}
+		for _, err := range bv.errChain {
+			if strings.Contains(err.Error(), errStr) {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 // IntValue
@@ -100,9 +188,30 @@ func (iv IntValue) Value() int64 {
 }
 
 func (iv IntValue) Error() error {
-	return iv.err
+	if len(iv.errChain) > 0 || iv.err != nil {
+		errStr := ""
+		if iv.err != nil {
+			iv.errChain = append(iv.errChain, iv.err)
+		}
+		for index, err := range iv.errChain {
+			errStr += fmt.Errorf("[%d] %w ", index, err).Error()
+		}
+
+		return fmt.Errorf("%s", errStr)
+	}
+	return nil
 }
 
-func (iv IntValue) AllErrors() []error {
-	return iv.errChain
+func (iv IntValue) AsError(errStr string) error {
+	if len(iv.errChain) > 0 || iv.err != nil {
+		if iv.err != nil {
+			iv.errChain = append(iv.errChain, iv.err)
+		}
+		for _, err := range iv.errChain {
+			if strings.Contains(err.Error(), errStr) {
+				return err
+			}
+		}
+	}
+	return nil
 }

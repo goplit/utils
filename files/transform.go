@@ -92,12 +92,19 @@ func (trp TransformStringProduct) AsUrl() UrlValue {
 }
 
 func (trp TransformStringProduct) AsJSON() JsonObjectValue {
+	if len(trp.product) == 0 {
+		return JsonObjectValue{
+			product:  nil,
+			err:      fmt.Errorf("empty string, cannot decode"),
+			errChain: trp.errChain,
+		}
+	}
 	var val map[string]interface{}
 	err := json.Unmarshal([]byte(trp.product), &val)
 	if err != nil {
 		return JsonObjectValue{
 			product:  nil,
-			err:      fmt.Errorf("error in parsing string to JSON, %w", err),
+			err:      fmt.Errorf("json parsing error, %w", err),
 			errChain: trp.errChain,
 		}
 	}
