@@ -48,12 +48,12 @@ func (uv UrlValue) AllErrors() []error {
 // Represents value designated as JSON Object
 // *should start with {}
 type JsonObjectValue struct {
-	product  map[interface{}]interface{}
+	product  map[string]interface{}
 	err      error
 	errChain []error
 }
 
-func (jov JsonObjectValue) Value() map[interface{}]interface{} {
+func (jov JsonObjectValue) Value() map[string]interface{} {
 	return jov.product
 }
 

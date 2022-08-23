@@ -1,6 +1,7 @@
 package files
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/goplit/utils/utilerror"
@@ -91,9 +92,18 @@ func (trp TransformStringProduct) AsUrl() UrlValue {
 }
 
 func (trp TransformStringProduct) AsJSON() JsonObjectValue {
+	var val map[string]interface{}
+	err := json.Unmarshal([]byte(trp.product), &val)
+	if err != nil {
+		return JsonObjectValue{
+			product:  nil,
+			err:      fmt.Errorf("error in parsing string to JSON, %w", err),
+			errChain: trp.errChain,
+		}
+	}
 	return JsonObjectValue{
-		product:  nil,
-		err:      fmt.Errorf("parsing JSON not implemented yet"),
+		product:  val,
+		err:      nil,
 		errChain: trp.errChain,
 	}
 }
