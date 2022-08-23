@@ -1,0 +1,8 @@
+section:
+  - item:
+      key: value
+  - item:
+      key: value
+section2:
+  item1: value1
+  item2: value2
